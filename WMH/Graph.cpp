@@ -1,6 +1,7 @@
 #include "Graph.h"
 
 #include "TextFile.h"
+#include "Solution.h"
 
 std::shared_ptr<Graph> Graph::loadFromFile( std::string path )
 {
@@ -42,10 +43,29 @@ Graph::~Graph()
 {
 }
 
-float Graph::getWeight( int vertexFrom, int vertexTo )
+float Graph::getWeight( int vertexFrom, int vertexTo ) const
 {
     if ( vertexFrom < 0 || vertexFrom >= vertexCount || vertexTo < 0 || vertexTo >= vertexCount )
         throw std::exception( "Graph::getWeight - incorrect vertex index passed." );
 
     return weightsMatrix.at( vertexFrom * vertexCount + vertexTo );
+}
+
+int Graph::getVertexCount() const
+{
+    return vertexCount;
+}
+
+float Graph::evaluateSolution( const Solution& solution ) const
+{
+    if ( solution.getVertexOrder().size( ) != vertexCount )
+        throw std::exception( "Graph::evaluateSolution - path is incomplete." );
+
+    float eval = 0.0f;
+
+    for ( int i = 0; i < vertexCount - 1; ++i ) {
+        eval += getWeight( solution.getVertexOrder( )[ i ], solution.getVertexOrder( )[ i + 1 ] );
+    }
+
+    return eval;
 }

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+class Solution;
+
 class Graph
 {
     public:
@@ -13,10 +15,13 @@ class Graph
 
     Graph();
     ~Graph();
-
-    float getWeight( int vertexFrom, int vertexTo );
+    
+    int   getVertexCount() const;
+    float evaluateSolution( const Solution& solution ) const;
 
     private:
+
+    float getWeight( int vertexFrom, int vertexTo ) const;
 
     int vertexCount;
 
