@@ -9,6 +9,7 @@ class Solution
     public:
 
     static std::shared_ptr<Solution> createRandom( int vertexCount );
+    static std::shared_ptr<Solution> reproduce( const Solution& solution1, const Solution& solution2 );
 
     Solution();
     ~Solution();

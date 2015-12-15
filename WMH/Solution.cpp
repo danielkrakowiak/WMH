@@ -30,6 +30,11 @@ std::shared_ptr<Solution> Solution::createRandom( int vertexCount )
     return solution;
 }
 
+std::shared_ptr<Solution> Solution::reproduce( const Solution& solution1, const Solution& solution2 )
+{
+    //#TODO: Eval both solutions and calculate probability of reproduction. Mix two solution together or return nullptr.
+}
+
 Solution::Solution()
 {}
 
