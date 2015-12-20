@@ -14,6 +14,8 @@ class Solution
     Solution();
     ~Solution();
 
+    void mutate(int k);
+
     const std::vector<int>& getVertexOrder() const;
     std::string toString() const;
 
