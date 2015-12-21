@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iterator>
 #include <algorithm>
+#include <windows.h>
 
 std::default_random_engine Solution::randomGenerator = std::default_random_engine( std::chrono::system_clock::now( ).time_since_epoch( ).count( ) );
 
@@ -109,13 +110,40 @@ std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Sol
 		}
 	}
 	
+	(*solution).mutate(3);
 
 	return solution;
 }
 
 void Solution::mutate(int k)
 {
-    //#TODO: Modify this solution with k-interchange (k as param).
+	int min = 0;
+	int max = getVertexOrder().size() - 1;
+	int elementNumber;
+	
+	std::vector<int> chosenPositions;
+	std::vector<int> chosenNumbers;
+	
+	for (int i = 0; i < k; i++) {
+		do {
+			elementNumber = min + (rand() % (int)(max - min + 1));
+		} while (std::find(chosenPositions.begin(), chosenPositions.end(), elementNumber) != chosenPositions.end());
+		
+		chosenPositions.push_back(elementNumber);
+		chosenNumbers.push_back(this->vertexOrder[elementNumber]);
+	}
+
+	/*for (int i = 0; i < k; i++) {
+		OutputDebugString(( "element position " + std::to_string(chosenPositions[i]) + "\n").c_str());
+		OutputDebugString((" value: " + std::to_string(chosenNumbers[i]) + "\n").c_str());
+	}*/
+
+	shuffle(chosenNumbers.begin(), chosenNumbers.end(), randomGenerator);
+
+	for (int i = 0; i < k; i++) {
+		elementNumber = chosenPositions[i];
+		this->vertexOrder[elementNumber] = chosenNumbers[i];
+	}
 }
 
 Solution::Solution()
