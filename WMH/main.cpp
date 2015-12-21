@@ -9,7 +9,7 @@ const int maxGenerationCount = 100000;
 void main()
 {
     try {
-        std::shared_ptr<Graph> graph = Graph::loadFromFile( "Graphs/ft70 (38673).txt" );
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "Graphs/test1.txt" );
 
         std::vector<std::shared_ptr<Solution>> currentGeneration;
         currentGeneration.reserve( generationSize );

@@ -22,6 +22,7 @@ class Solution
     private:
 
     static std::default_random_engine randomGenerator;
+	static std::shared_ptr<Solution> crosses(const Solution& solution1, const Solution& solution2, const int k);
 
     std::vector<int> vertexOrder;
 };
