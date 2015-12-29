@@ -77,23 +77,21 @@ std::shared_ptr<Solution> Solution::cross(const Solution& solution1, const Solut
 			bannedCorners.push_back(v1[i]);
 		}
 
-		diff = solution2.getVertexOrder();
-
 	} else { //k <0
 		for (int i = k; i < 0; i++) {
 			bannedCorners.push_back(v1[v1.size()+i]);
 		}
-
-		diff = solution1.getVertexOrder();
 	}
 	
-	int p = 0;
-	for (int i = 0; i < v1.size(); i++) {
+	for (int i = 0; i < v2.size(); i++) {
+		bool flag = TRUE;
 		for (int j = 0; j < bannedCorners.size(); j++) {
-			if (v1[i] == bannedCorners[j]) {
-				diff.erase(diff.begin() + (i - p));
-				p++;
+			if (v2[i] == bannedCorners[j]) {
+				flag = FALSE;
 			}
+		}
+		if (flag) {
+			diff.push_back(v2[i]);
 		}
 	}
 
