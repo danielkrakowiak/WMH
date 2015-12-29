@@ -55,17 +55,3 @@ int Graph::getVertexCount() const
 {
     return vertexCount;
 }
-
-float Graph::evaluateSolution( const Solution& solution ) const
-{
-    if ( solution.getVertexOrder().size( ) != vertexCount )
-        throw std::exception( "Graph::evaluateSolution - path is incomplete." );
-
-    float eval = 0.0f;
-
-    for ( int i = 0; i < vertexCount - 1; ++i ) {
-        eval += getWeight( solution.getVertexOrder( )[ i ], solution.getVertexOrder( )[ i + 1 ] );
-    }
-
-    return eval;
-}

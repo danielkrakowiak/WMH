@@ -17,11 +17,9 @@ class Graph
     ~Graph();
     
     int   getVertexCount() const;
-    float evaluateSolution( const Solution& solution ) const;
+    float getWeight( int vertexFrom, int vertexTo ) const;
 
     private:
-
-    float getWeight( int vertexFrom, int vertexTo ) const;
 
     int vertexCount;
 

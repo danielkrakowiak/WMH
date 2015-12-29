@@ -7,22 +7,24 @@
 #include <algorithm>
 #include <windows.h>
 
+#include "Graph.h"
+
 std::default_random_engine Solution::randomGenerator = std::default_random_engine( std::chrono::system_clock::now( ).time_since_epoch( ).count( ) );
 
-std::shared_ptr<Solution> Solution::createRandom( int vertexCount )
+std::shared_ptr<Solution> Solution::createRandom( const Graph& graph )
 {
     std::shared_ptr<Solution> solution = std::make_shared<Solution>();
 
     std::vector<int> vertices;
-    vertices.resize( vertexCount );
-    for ( int i = 0; i < vertexCount; ++i )
+    vertices.resize( graph.getVertexCount() );
+    for ( int i = 0; i < graph.getVertexCount(); ++i )
         vertices[ i ] = i;
 
-    solution->vertexOrder.resize( vertexCount );
+    solution->vertexOrder.resize( graph.getVertexCount() );
 
-    std::uniform_int_distribution<int> distribution( 0, vertexCount );
+    std::uniform_int_distribution<int> distribution( 0, graph.getVertexCount() );
 
-    for ( int i = 0; i < vertexCount; ++i ) {
+    for ( int i = 0; i < graph.getVertexCount(); ++i ) {
         const int randomIndex = distribution( randomGenerator ) % vertices.size( );
 
         solution->vertexOrder[ i ] = vertices[ randomIndex ];
@@ -30,12 +32,12 @@ std::shared_ptr<Solution> Solution::createRandom( int vertexCount )
         vertices.erase( vertices.begin() + randomIndex );
     }
 
-	reproduce(*solution, *solution);
+	solution->evaluate( graph );
 
     return solution;
 }
 
-std::shared_ptr<Solution> Solution::reproduce( const Solution& solution1, const Solution& solution2 )
+std::shared_ptr<Solution> Solution::reproduce( const Solution& solution1, const Solution& solution2, const Graph& graph )
 {
 	std::shared_ptr<Solution> solution = std::make_shared<Solution>();
 
@@ -49,12 +51,14 @@ std::shared_ptr<Solution> Solution::reproduce( const Solution& solution1, const 
 		k = min + (rand() % (int)(max - min + 1));
 	} while (k == 0);
 
-	solution = crosses(solution1, solution2, k);
+	solution = cross(solution1, solution2, k);
+
+    solution->evaluate( graph );
 
 	return solution;
 }
 
-std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Solution& solution2, const int k)
+std::shared_ptr<Solution> Solution::cross(const Solution& solution1, const Solution& solution2, const int k)
 {
 	std::shared_ptr<Solution> solution = std::make_shared<Solution>();
 
@@ -66,9 +70,7 @@ std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Sol
 	std::vector<int> diff;
 	
 	v1 = solution1.getVertexOrder();
-	//v1.push_back(5);
 	v2 = solution2.getVertexOrder();
-	//v2.push_back(3);
 
 	if (k > 0) {
 		for (int i = 0; i < k; i++) {
@@ -76,7 +78,6 @@ std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Sol
 		}
 
 		diff = solution2.getVertexOrder();
-		//diff.push_back(3);
 
 	} else { //k <0
 		for (int i = k; i < 0; i++) {
@@ -84,8 +85,6 @@ std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Sol
 		}
 
 		diff = solution1.getVertexOrder();
-		//diff.push_back(5);
-
 	}
 	
 	int p = 0;
@@ -110,12 +109,10 @@ std::shared_ptr<Solution> Solution::crosses(const Solution& solution1, const Sol
 		}
 	}
 	
-	(*solution).mutate(3);
-
 	return solution;
 }
 
-void Solution::mutate(int k)
+void Solution::mutate( int k, const Graph& graph )
 {
 	int min = 0;
 	int max = getVertexOrder().size() - 1;
@@ -144,9 +141,12 @@ void Solution::mutate(int k)
 		elementNumber = chosenPositions[i];
 		this->vertexOrder[elementNumber] = chosenNumbers[i];
 	}
+
+    evaluate( graph );
 }
 
-Solution::Solution()
+Solution::Solution() :
+evaluation(FLT_MAX)
 {}
 
 
@@ -156,6 +156,22 @@ Solution::~Solution()
 const std::vector<int>& Solution::getVertexOrder() const
 {
     return vertexOrder;
+}
+
+float Solution::getEvaluation() const
+{
+    return evaluation;
+}
+
+void Solution::evaluate( const Graph& graph )
+{
+    if ( getVertexOrder().size() != graph.getVertexCount() )
+        throw std::exception( "Solution::evaluate - path is incomplete." );
+
+    evaluation = 0.0f;
+
+    for ( int i = 0; i < graph.getVertexCount() - 1; ++i )
+        evaluation += graph.getWeight( getVertexOrder()[ i ], getVertexOrder()[ i + 1 ] );
 }
 
 std::string Solution::toString( ) const
