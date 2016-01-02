@@ -5,15 +5,15 @@
 #include <chrono>
 #include <Windows.h>
 
-const int baseGenerationSize = 100;
+const int baseGenerationSize = 3000;
 const int tempGenerationSize = baseGenerationSize * 2;
-const int maxGenerationCount = 1000;
+const int maxGenerationCount = 8000;
 
 int findIndex( const std::vector<float>& values, float targetValue );
 
 void main()
 {
-    const int   mutateVertexCount = 3;
+    const int   mutateVertexCount = 5;
     const float crossProbability = 0.7f;
     const float mutationProbability = 0.05f;
 
@@ -51,6 +51,7 @@ void main()
                     totalEval += solution->getEvaluation();
                     worstEval = max( worstEval, solution->getEvaluation() );
                 }
+                OutputDebugString( ("\nBase gen - Av. eval: " + std::to_string( totalEval / (float)baseGenerationSize )).c_str() );
 
                 // Calculate values on the "roulette wheel" for each solution.
                 rouletteValues[ 0 ] = (worstEval - baseGeneration[ 0 ]->getEvaluation() + 1.0f) / (totalEval + 1.0f);
@@ -58,12 +59,15 @@ void main()
                     rouletteValues[ i ] = rouletteValues[ i - 1 ] + ((worstEval - baseGeneration[ i ]->getEvaluation() + 1.0f) / (totalEval + 1.0f));
 
                 // Select solutions from base to temporary generation.
+                float totalEval2 = 0.0f; // For debug.
                 while ( tempGeneration.size() < tempGenerationSize )
                 {
                     float random = fmodf( realDistribution( randomGenerator ), rouletteValues.back() );
                     int index = findIndex( rouletteValues, random );
                     tempGeneration.push_back( baseGeneration[ index ] );
+                    totalEval2 += baseGeneration[ index ]->getEvaluation();
                 }
+                OutputDebugString( ("\nTemp gen - Av. eval: " + std::to_string( totalEval2 / (float)tempGenerationSize )).c_str() );
             }
 
             baseGeneration.clear();
@@ -88,7 +92,7 @@ void main()
                         baseGeneration.push_back( childSolution );
                     } else {
                         // Select the better of the parents.
-                        if ( solution1->getEvaluation() >= solution2->getEvaluation() )
+                        if ( solution1->getEvaluation() <= solution2->getEvaluation() )
                             baseGeneration.push_back( solution1 );
                         else
                             baseGeneration.push_back( solution2 );
@@ -119,7 +123,7 @@ void main()
                 }
             }
 
-            OutputDebugString( (std::to_string( currentGenerationIndex ) + ":" + std::to_string( generationBestEval ) + " " + generationBestSolution->toString( ) + "\n").c_str( ) );
+            OutputDebugString( ("\n" + std::to_string( currentGenerationIndex ) + ":" + std::to_string( generationBestEval ) + " " + generationBestSolution->toString( ) + "\n").c_str( ) );
         
             ++currentGenerationIndex;
         }
