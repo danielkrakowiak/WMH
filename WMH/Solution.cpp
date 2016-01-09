@@ -147,6 +147,10 @@ Solution::Solution() :
 evaluation(FLT_MAX)
 {}
 
+Solution::Solution( const Solution& obj ) :
+evaluation( obj.evaluation ),
+vertexOrder( obj.vertexOrder.cbegin(), vertexOrder.cend() )
+{}
 
 Solution::~Solution()
 {}

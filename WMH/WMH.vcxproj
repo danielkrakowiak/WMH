@@ -68,11 +68,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Solution.cpp" />
     <ClCompile Include="TextFile.cpp" />
+    <ClCompile Include="TSPSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Solution.h" />
     <ClInclude Include="TextFile.h" />
+    <ClInclude Include="TSPSolver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

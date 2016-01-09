@@ -14,6 +14,7 @@ class Solution
     static std::shared_ptr<Solution> reproduce( const Solution& solution1, const Solution& solution2, const Graph& graph );
 
     Solution();
+    Solution( const Solution& obj );
     ~Solution();
 
     void mutate( int k, const Graph& graph );
