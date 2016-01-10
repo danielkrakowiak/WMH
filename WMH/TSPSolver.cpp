@@ -7,12 +7,14 @@
 #include "Graph.h"
 #include "Solution.h"
 
-std::shared_ptr<TSPSolver::Result> TSPSolver::solve( const Graph& graph, const unsigned int baseGenerationSize, const unsigned int maxGenerationCount,
+std::shared_ptr<TSPSolver::Result> TSPSolver::solve( const Graph& graph, const unsigned int baseGenerationSize, const unsigned int maxGenerationCount, const float maxTime,
                                                      const int mutateVertexCount, const float crossProbability, const float mutationProbability )
 {
     const unsigned int tempGenerationSize = baseGenerationSize * 2;
 
     std::shared_ptr<Result> result = std::make_shared<Result>();
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now(), currTime = startTime;
 
     try {
         std::default_random_engine            randomGenerator = std::default_random_engine( std::chrono::system_clock::now().time_since_epoch().count() );
@@ -34,7 +36,7 @@ std::shared_ptr<TSPSolver::Result> TSPSolver::solve( const Graph& graph, const u
         std::shared_ptr<Solution> bestSolution, generationBestSolution;
         unsigned int              currentGenerationIndex = 0;
 
-        while ( currentGenerationIndex < maxGenerationCount ) {
+        while ( currentGenerationIndex < maxGenerationCount && std::chrono::duration_cast<std::chrono::duration<float>>(currTime - startTime).count() < maxTime ) {
             generationBestEval = FLT_MAX;
             generationBestSolution = nullptr;
             generationTotalEval = 0.0f;
@@ -119,6 +121,8 @@ std::shared_ptr<TSPSolver::Result> TSPSolver::solve( const Graph& graph, const u
             //OutputDebugString( ("\n" + std::to_string( currentGenerationIndex ) + ":" + std::to_string( generationBestEval ) + " " + generationBestSolution->toString() + "\n").c_str() );
 
             ++currentGenerationIndex;
+
+            currTime = std::chrono::steady_clock::now();
         }
 
         //OutputDebugString( ("\n\n Final result: " + std::to_string( currentGenerationIndex ) + ":" + std::to_string( bestEval ) + " " + bestSolution->toString() + "\n").c_str() );

@@ -18,7 +18,7 @@ class TSPSolver
         std::vector<GenerationStats> generationStats;
     };
 
-    static std::shared_ptr<Result> solve( const Graph& graph, const unsigned int baseGenerationSize, const unsigned int maxGenerationCount, 
+    static std::shared_ptr<Result> solve( const Graph& graph, const unsigned int baseGenerationSize, const unsigned int maxGenerationCount, const float maxTime,
                          const int mutateVertexCount, const float crossProbability, const float mutationProbability );
 
     private:
