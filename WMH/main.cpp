@@ -14,12 +14,12 @@
 void main(int argc, char* argv[])
 {
     unsigned int run = 0;
-    unsigned int maxGenerationCount     = 1;
+    unsigned int maxGenerationCount     = 5000;
     float        maxTime                = 300.0f;
-    unsigned int baseGenerationSizeMin  = 1000,  baseGenerationSizeMax  = 3000,   baseGenerationSizeStep  = 500;
-    unsigned int mutateVertexCountMin   = 0,     mutateVertexCountMax   = 10,     mutateVertexCountStep   = 2;
-    float        crossProbabilityMin    = 0.5f,  crossProbabilityMax    = 0.95f,  crossProbabilityStep    = 0.05f;
-    float        mutationProbabilityMin = 0.0f,  mutationProbabilityMax = 0.2f,   mutationProbabilityStep = 0.025f;
+    unsigned int baseGenerationSizeMin  = 1500,    baseGenerationSizeMax  = 1500,   baseGenerationSizeStep  = 500;
+    unsigned int mutateVertexCountMin   = 2,       mutateVertexCountMax   = 2,      mutateVertexCountStep   = 2;
+    float        crossProbabilityMin    = 0.55f,   crossProbabilityMax    = 0.55f,  crossProbabilityStep    = 0.05f;
+    float        mutationProbabilityMin = 0.025f,  mutationProbabilityMax = 0.025f, mutationProbabilityStep = 0.025f;
 
     for ( unsigned int i = 1; i + 1 < argc; i += 2 )
     {
@@ -87,11 +87,11 @@ void main(int argc, char* argv[])
                         try {
                             file << "Params: ----------------------------- \n";
                             file << ("\n  baseGenerationSize: " + std::to_string( baseGenerationSize )).c_str();
-                            file << ("\n  maxGenerationCount: " + std::to_string( baseGenerationSize )).c_str();
+                            file << ("\n  maxGenerationCount: " + std::to_string( maxGenerationCount )).c_str();
                             file << ("\n  maxTime: " + std::to_string( maxTime )).c_str();
-                            file << ("\n  mutateVertexCount: " + std::to_string( baseGenerationSize )).c_str();
-                            file << ("\n  crossProbability: " + std::to_string( baseGenerationSize )).c_str();
-                            file << ("\n  mutationProbability: " + std::to_string( baseGenerationSize )).c_str();
+                            file << ("\n  mutateVertexCount: " + std::to_string( mutateVertexCount )).c_str();
+                            file << ("\n  crossProbability: " + std::to_string( crossProbability )).c_str();
+                            file << ("\n  mutationProbability: " + std::to_string( mutationProbability )).c_str();
 
                             std::shared_ptr<TSPSolver::Result> result = TSPSolver::solve( *graph, baseGenerationSize, maxGenerationCount, maxTime, mutateVertexCount, crossProbability, mutationProbability );
 
