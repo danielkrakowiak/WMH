@@ -174,6 +174,9 @@ void Solution::evaluate( const Graph& graph )
 
     for ( int i = 0; i < graph.getVertexCount() - 1; ++i )
         evaluation += graph.getWeight( getVertexOrder()[ i ], getVertexOrder()[ i + 1 ] );
+
+    // Add cost of going back to the origin.
+    evaluation += graph.getWeight( getVertexOrder()[ graph.getVertexCount() - 1 ], getVertexOrder()[ 0 ] );
 }
 
 std::string Solution::toString( ) const

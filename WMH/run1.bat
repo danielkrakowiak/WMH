@@ -1,6 +1,6 @@
 WMH.exe run 1 ^
 maxGenerationCount 100000 ^
-maxTime 12.0f ^
+maxTime 120.0f ^
 baseGenerationSizeMin 1000 ^
 baseGenerationSizeMax 1000 ^
 baseGenerationSizeStep 500 ^
