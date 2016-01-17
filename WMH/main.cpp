@@ -56,11 +56,18 @@ void main(int argc, char* argv[])
 
     std::shared_ptr<Graph> graph = Graph::loadFromFile( "Graphs/" + graphName + ".txt" );
 
-    const unsigned int totalRunCount = 
-        ((baseGenerationSizeMax - baseGenerationSizeMin) / baseGenerationSizeStep + 1) *
-        ((mutateVertexCountMax - mutateVertexCountMin) / mutateVertexCountStep + 1) *
-        (unsigned int)((crossProbabilityMax - crossProbabilityMin) / crossProbabilityStep) *
-        (unsigned int)((mutationProbabilityMax - mutationProbabilityMin) / mutationProbabilityStep);
+    // Calculate the number of total runs required.
+    unsigned int totalRunCount = 0;
+    for ( unsigned int baseGenerationSize = baseGenerationSizeMin; baseGenerationSize <= baseGenerationSizeMax; baseGenerationSize += baseGenerationSizeStep ) {
+        for ( unsigned int mutateVertexCount = mutateVertexCountMin; mutateVertexCount <= mutateVertexCountMax; mutateVertexCount += mutateVertexCountStep ) {
+            for ( float crossProbability = crossProbabilityMin; crossProbability <= crossProbabilityMax; crossProbability += crossProbabilityStep ) {
+                for ( float mutationProbability = mutationProbabilityMin; mutationProbability <= mutationProbabilityMax; mutationProbability += mutationProbabilityStep ) {
+                    if ((mutateVertexCount > 0 && mutationProbability) > 0.0f || (mutateVertexCount == 0 && mutationProbability == 0.0f))
+                        ++totalRunCount;
+                }
+            }
+        }
+    }
 
     std::cout << std::fixed << std::setprecision(3);
     outputFile << std::fixed << std::setprecision(3);
@@ -70,52 +77,54 @@ void main(int argc, char* argv[])
         for ( unsigned int mutateVertexCount = mutateVertexCountMin; mutateVertexCount <= mutateVertexCountMax; mutateVertexCount += mutateVertexCountStep ) {
             for ( float crossProbability = crossProbabilityMin; crossProbability <= crossProbabilityMax; crossProbability += crossProbabilityStep ) {
                 for ( float mutationProbability = mutationProbabilityMin; mutationProbability <= mutationProbabilityMax; mutationProbability += mutationProbabilityStep ) {
-                    std::cout << "Progress: " << runIndex << "/" << totalRunCount;
-
-                    try {
-                        
-                        std::string filename =
-                            graphName + " " +
-                            std::to_string( baseGenerationSize ) + " " +
-                            std::to_string( mutateVertexCount ) + " " +
-                            std::to_string( crossProbability ) + " " +
-                            std::to_string( mutationProbability ) + ".txt";
-
-                        std::ofstream file;
-                        file.open( (path + filename).c_str() );
+                    if ((mutateVertexCount > 0 && mutationProbability) > 0.0f || (mutateVertexCount == 0 && mutationProbability == 0.0f)) {
+                        std::cout << "Progress: " << runIndex << "/" << totalRunCount;
 
                         try {
-                            file << "Params: ----------------------------- \n";
-                            file << ("\n  baseGenerationSize: " + std::to_string( baseGenerationSize )).c_str();
-                            file << ("\n  maxGenerationCount: " + std::to_string( maxGenerationCount )).c_str();
-                            file << ("\n  maxTime: " + std::to_string( maxTime )).c_str();
-                            file << ("\n  mutateVertexCount: " + std::to_string( mutateVertexCount )).c_str();
-                            file << ("\n  crossProbability: " + std::to_string( crossProbability )).c_str();
-                            file << ("\n  mutationProbability: " + std::to_string( mutationProbability )).c_str();
+                        
+                            std::string filename =
+                                graphName + " " +
+                                std::to_string( baseGenerationSize ) + " " +
+                                std::to_string( mutateVertexCount ) + " " +
+                                std::to_string( crossProbability ) + " " +
+                                std::to_string( mutationProbability ) + ".txt";
 
-                            std::shared_ptr<TSPSolver::Result> result = TSPSolver::solve( *graph, baseGenerationSize, maxGenerationCount, maxTime, mutateVertexCount, crossProbability, mutationProbability );
+                            std::ofstream file;
+                            file.open( (path + filename).c_str() );
 
-                            std::cout << "\r" << baseGenerationSize << ", " << mutateVertexCount << ", " << crossProbability << ", " << mutationProbability << "    :     " << result->bestSolution.getEvaluation() << "\n";
-                            outputFile << baseGenerationSize << ", " << mutateVertexCount << ", " << crossProbability << ", " << mutationProbability << "    :     " << result->bestSolution.getEvaluation() << "\n";
+                            try {
+                                file << "Params: ----------------------------- \n";
+                                file << ("\n  baseGenerationSize: " + std::to_string( baseGenerationSize )).c_str();
+                                file << ("\n  maxGenerationCount: " + std::to_string( maxGenerationCount )).c_str();
+                                file << ("\n  maxTime: " + std::to_string( maxTime )).c_str();
+                                file << ("\n  mutateVertexCount: " + std::to_string( mutateVertexCount )).c_str();
+                                file << ("\n  crossProbability: " + std::to_string( crossProbability )).c_str();
+                                file << ("\n  mutationProbability: " + std::to_string( mutationProbability )).c_str();
 
-                            file << "\n\nResult: ----------------------------- \n";
-                            file << ("\n  best eval: " + std::to_string( result->bestSolution.getEvaluation() )).c_str();
-                            file << ("\n  best solution: " + result->bestSolution.toString()).c_str();
+                                std::shared_ptr<TSPSolver::Result> result = TSPSolver::solve( *graph, baseGenerationSize, maxGenerationCount, maxTime, mutateVertexCount, crossProbability, mutationProbability );
 
-                            file << "\n\nGenerations: ----------------------------- \n";
-                            for ( unsigned int i = 0; i < result->generationStats.size(); ++i )
-                                file << ("\n     " + std::to_string( i ) + "      :      " +
-                                std::to_string( result->generationStats[ i ].bestEval )).c_str();
+                                std::cout << "\r" << baseGenerationSize << ", " << mutateVertexCount << ", " << crossProbability << ", " << mutationProbability << "    :     " << result->bestSolution.getEvaluation() << "\n";
+                                outputFile << baseGenerationSize << ", " << mutateVertexCount << ", " << crossProbability << ", " << mutationProbability << "    :     " << result->bestSolution.getEvaluation() << "\n";
 
-                        } catch ( std::exception& e ) {
-                            file << (e.what() + std::string( "\n" )).c_str();
+                                file << "\n\nResult: ----------------------------- \n";
+                                file << ("\n  best eval: " + std::to_string( result->bestSolution.getEvaluation() )).c_str();
+                                file << ("\n  best solution: " + result->bestSolution.toString()).c_str();
+
+                                file << "\n\nGenerations: ----------------------------- \n";
+                                for ( unsigned int i = 0; i < result->generationStats.size(); ++i )
+                                    file << ("\n     " + std::to_string( i ) + "      :      " +
+                                    std::to_string( result->generationStats[ i ].bestEval )).c_str();
+
+                            } catch ( std::exception& e ) {
+                                file << (e.what() + std::string( "\n" )).c_str();
+                            }
+
+                            file.close();
+                        } catch ( ... ) {
                         }
 
-                        file.close();
-                    } catch ( ... ) {
+                        ++runIndex;
                     }
-
-                    ++runIndex;
                 }
             }
         }
