@@ -18,6 +18,7 @@ class Solution
     ~Solution();
 
     void mutate( int k, const Graph& graph );
+	static std::shared_ptr<Solution> cross(const Solution& solution1, const Solution& solution2, const int k);
 
     const std::vector<int>& getVertexOrder() const;
     float getEvaluation() const;
@@ -26,7 +27,6 @@ class Solution
     private:
 
     static std::default_random_engine randomGenerator;
-	static std::shared_ptr<Solution> cross( const Solution& solution1, const Solution& solution2, const int k );
 
     void evaluate( const Graph& graph );
 

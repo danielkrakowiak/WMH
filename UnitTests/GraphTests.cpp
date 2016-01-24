@@ -65,6 +65,39 @@ namespace UnitTests
             {}
         }
 
+		TEST_METHOD(Get_Proper_Vertex_Count)
+		{
+			try
+			{
+				std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/Test/simple1.txt");
+				Assert::IsNotNull(graph.get());
+
+				Assert::IsTrue(graph->getVertexCount() == 4);
+			}
+			catch (...)
+			{
+				Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(Get_proper_weight)
+		{
+			try
+			{
+				std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/Test/simple1.txt");
+				Assert::IsNotNull(graph.get());
+
+				Assert::IsTrue(graph->getWeight(0, 1) == 4.0f);
+				Assert::IsTrue(graph->getWeight(1, 2) == 2.0f);
+				Assert::IsTrue(graph->getWeight(2, 1) == 3.0f);
+				Assert::IsTrue(graph->getWeight(2, 3) == 11.0f);
+			}
+			catch (...)
+			{
+				Assert::Fail();
+			}
+		}
+
         TEST_METHOD( Loading_Simple_Graph_1 )
         {
             try
