@@ -20,7 +20,7 @@ namespace UnitTests
 		TEST_METHOD_CLEANUP(Cleanup)
 		{}
 
-		TEST_METHOD( Solution_Size_Matching_Graph_Size_During_CreateRandom )
+		TEST_METHOD( Solution_createRandom_Size_Matching_Graph_Size )
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test2.txt");
 
@@ -32,13 +32,13 @@ namespace UnitTests
 			{
 				Assert::IsTrue( graph->getVertexCount() == solution->getVertexOrder().size() );
 			}
-			catch (std::exception& e)
+			catch ( ... )
 			{
 				Assert::Fail();
 			}
 		}
 
-		TEST_METHOD(Solution_Corners_Matching_Graph_Corners) 
+		TEST_METHOD( Solution_createRandom_Corners_Matching_Graph_Corners) 
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test2.txt");
 
@@ -50,18 +50,18 @@ namespace UnitTests
 
 			try
 			{
-				for (int i = 0; i < solution->getVertexOrder().size(); i++)
+				for (unsigned int i = 0; i < solution->getVertexOrder().size(); i++)
 				{
 					Assert::IsTrue(solution->getVertexOrder().at(i) < graphCount);
 				}
 			}
-			catch (std::exception& e)
+			catch ( ... )
 			{
 				Assert::Fail();
 			}
 		}
 
-		TEST_METHOD( Cross_k_Positive )
+		TEST_METHOD( Solution_cross_k_Positive )
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test1.txt");
 
@@ -93,13 +93,13 @@ namespace UnitTests
 					Assert::IsFalse(solution->getVertexOrder().at(3) == solution1->getVertexOrder().at(3));
 				}
 			}
-			catch (std::exception& e)
+			catch ( ... )
 			{
 				Assert::Fail();
 			}
 		}
 
-		TEST_METHOD( Cross_k_Negative )
+		TEST_METHOD( Solution_cross_k_Negative )
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test1.txt");
 
@@ -131,7 +131,7 @@ namespace UnitTests
 					Assert::IsTrue(solution->getVertexOrder().at(3) == solution1->getVertexOrder().at(3));
 				}
 			}
-			catch (std::exception& e)
+			catch ( ... )
 			{
 				Assert::Fail();
 			}

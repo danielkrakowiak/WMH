@@ -56,7 +56,14 @@ int TextFile::parseInt( std::vector<char>::const_iterator& it, const std::vector
 
     std::string text( beginIt, it );
 
-    return std::strtol( text.c_str(), nullptr, 10 );
+    const char* startPtr = text.c_str();
+    char*       endPtr = nullptr;
+    const int result = std::strtol( startPtr, &endPtr, 10 );
+
+    if ( endPtr != startPtr )
+        return result;
+    else
+        throw std::exception( "TextFile::parseInt - failed to read int." );
 }
 
 float TextFile::parseFloat( std::vector<char>::const_iterator& it, const std::vector<char>::const_iterator& endIt )
@@ -68,7 +75,14 @@ float TextFile::parseFloat( std::vector<char>::const_iterator& it, const std::ve
 
     std::string text( beginIt, it );
 
-    return std::strtof( text.c_str(), nullptr );
+    const char* startPtr = text.c_str();
+    char*       endPtr = nullptr;
+    const float result = std::strtof( startPtr, &endPtr );
+
+    if ( endPtr != startPtr )
+        return result;
+    else
+        throw std::exception( "TextFile::parseFloat - failed to read float." );
 }
 
 void TextFile::skipSpaces( std::vector<char>::const_iterator& it, const std::vector<char>::const_iterator& endIt )

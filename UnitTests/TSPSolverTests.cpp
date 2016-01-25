@@ -20,7 +20,7 @@ namespace UnitTests
 		TEST_METHOD_CLEANUP(Cleanup)
 		{}
 
-		TEST_METHOD(Compare_Result_Size_To_Graph_Size)
+		TEST_METHOD(TSPSolver_solve_Compare_Result_Size_To_Graph_Size)
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test2.txt");
 
@@ -43,7 +43,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(Each_Corner_Visited_Once)
+		TEST_METHOD(TSPSolver_solve_Each_Corner_Visited_Once)
 		{
 			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/ft70 (38673).txt");
 

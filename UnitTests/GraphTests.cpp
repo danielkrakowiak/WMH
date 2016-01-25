@@ -17,7 +17,7 @@ namespace UnitTests
         TEST_METHOD_CLEANUP( Cleanup )
         {}
 		
-		TEST_METHOD( Initial_State_Test )
+		TEST_METHOD( Graph_Initial_State_Test )
 		{
 			Graph graph;
 
@@ -32,7 +32,7 @@ namespace UnitTests
             {}
 		}
 
-        TEST_METHOD( Loading_Graph_From_Wrong_Path )
+        TEST_METHOD( Graph_Loading_From_Wrong_Path )
         {
             try 
             {
@@ -43,7 +43,7 @@ namespace UnitTests
             {}
         }
 
-        TEST_METHOD( Loading_Corrupted_Graph_1 )
+        TEST_METHOD( Graph_Loading_Corrupted_1 )
         {
             try 
             {
@@ -54,7 +54,7 @@ namespace UnitTests
             {}
         }
 
-        TEST_METHOD( Loading_Corrupted_Graph_2 )
+        TEST_METHOD( Graph_Loading_Corrupted_2 )
         {
             try 
             {
@@ -65,7 +65,7 @@ namespace UnitTests
             {}
         }
 
-		TEST_METHOD(Get_Proper_Vertex_Count)
+		TEST_METHOD( Graph_Loading_Simple_Check_Size )
 		{
 			try
 			{
@@ -80,7 +80,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(Get_proper_weight)
+		TEST_METHOD( Graph_Loading_Simple_Check_Weights )
 		{
 			try
 			{
@@ -98,27 +98,7 @@ namespace UnitTests
 			}
 		}
 
-        TEST_METHOD( Loading_Simple_Graph_1 )
-        {
-            try
-            {
-                std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/Test/simple1.txt" );
-                Assert::IsNotNull( graph.get() );
-
-                Assert::IsTrue( graph->getVertexCount() == 4 );
-
-                Assert::IsTrue( graph->getWeight( 0, 1 ) == 4.0f );
-                Assert::IsTrue( graph->getWeight( 1, 2 ) == 2.0f );
-                Assert::IsTrue( graph->getWeight( 2, 1 ) == 3.0f );
-                Assert::IsTrue( graph->getWeight( 2, 3 ) == 11.0f );
-            } 
-            catch(...)
-            {
-                Assert::Fail();
-            }
-        }
-
-        TEST_METHOD( Loading_Complex_Graph_1 )
+        TEST_METHOD( Graph_Loading_Complex_Check_Size )
         {
             try 
             {

@@ -1,8 +1,8 @@
-WMH.exe run 2 ^
+WMH.exe run 6 ^
 maxGenerationCount 100000 ^
 maxTime 120.0f ^
-baseGenerationSizeMin 1000 ^
-baseGenerationSizeMax 1000 ^
+baseGenerationSizeMin 3000 ^
+baseGenerationSizeMax 3000 ^
 baseGenerationSizeStep 500 ^
 mutateVertexCountMin 0 ^
 mutateVertexCountMax 10 ^
