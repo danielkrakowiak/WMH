@@ -4,6 +4,8 @@
 
 #include "Solution.h"
 
+#include "TestHelper.h"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -13,128 +15,109 @@ namespace UnitTests
 	{
 	public:
 
-		TEST_METHOD_INITIALIZE(Init)
-		{
-		}
+    TEST_METHOD( Solution_createRandom )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test2.txt" );
 
-		TEST_METHOD_CLEANUP(Cleanup)
-		{}
+        try {
+            std::shared_ptr<Solution> solution = Solution::createRandom( *graph );
 
-		TEST_METHOD( Solution_createRandom_Size_Matching_Graph_Size )
-		{
-			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test2.txt");
+            Assert::IsTrue( solution->getVertexOrder().size() == (unsigned int)graph->getVertexCount() );
+            Assert::IsTrue( TestHelper::solutionHasUniqueAndCorrectVertices( *solution ) );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
 
-			std::shared_ptr<Solution> solution = std::make_shared<Solution>();
+    TEST_METHOD( Solution_cross_different_solutions_for_positive_k )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test1.txt" );
 
-			solution = Solution::createRandom( *graph );
+        std::shared_ptr<Solution> solution1 = Solution::createRandom( *graph );
 
-			try
-			{
-				Assert::IsTrue( graph->getVertexCount() == solution->getVertexOrder().size() );
-			}
-			catch ( ... )
-			{
-				Assert::Fail();
-			}
-		}
+        std::shared_ptr<Solution> solution2 = nullptr;
+        do {
+            solution2 = Solution::createRandom( *graph );
+        } while ( TestHelper::areSolutionsSame( *solution1, *solution2 ) );
 
-		TEST_METHOD( Solution_createRandom_Corners_Matching_Graph_Corners) 
-		{
-			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test2.txt");
+        try {
 
-			std::shared_ptr<Solution> solution = std::make_shared<Solution>();
+            std::shared_ptr<Solution> solution = Solution::cross( *solution1, *solution2, 2 );
 
-			solution = Solution::createRandom(*graph);
+            TestHelper::solutionHasUniqueAndCorrectVertices( *solution );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
 
-			int graphCount = graph->getVertexCount();
+    TEST_METHOD( Solution_cross_different_solutions_for_negative_k )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test1.txt" );
 
-			try
-			{
-				for (unsigned int i = 0; i < solution->getVertexOrder().size(); i++)
-				{
-					Assert::IsTrue(solution->getVertexOrder().at(i) < graphCount);
-				}
-			}
-			catch ( ... )
-			{
-				Assert::Fail();
-			}
-		}
+        std::shared_ptr<Solution> solution1 = Solution::createRandom( *graph );
 
-		TEST_METHOD( Solution_cross_k_Positive )
-		{
-			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test1.txt");
+        std::shared_ptr<Solution> solution2 = nullptr;
+        do {
+            solution2 = Solution::createRandom( *graph );
+        } while ( TestHelper::areSolutionsSame( *solution1, *solution2 ) );
 
-			std::shared_ptr<Solution> solution = std::make_shared<Solution>();
-			std::shared_ptr<Solution> solution1 = std::make_shared<Solution>();
-			std::shared_ptr<Solution> solution2 = std::make_shared<Solution>();
+        try {
 
-			solution1 = Solution::createRandom(*graph);
-			solution2 = Solution::createRandom(*graph);
+            std::shared_ptr<Solution> solution = Solution::cross( *solution1, *solution2, -2 );
 
-			bool sameSolutions = true;
+            TestHelper::solutionHasUniqueAndCorrectVertices( *solution );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
 
-			for (int i = 0; i < graph->getVertexCount(); i++)
-			{
-				if (solution1->getVertexOrder().at(i) != solution1->getVertexOrder().at(i)) {
-					sameSolutions = false;
-					break;
-				}
-			}
+    TEST_METHOD( Solution_cross_same_solutions_for_positive_k )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test1.txt" );
 
-			solution = Solution::cross(*solution1, *solution2, 2);
+        std::shared_ptr<Solution> solution1 = Solution::createRandom( *graph );
 
-			try
-			{
-				if (!sameSolutions) {
-					Assert::IsTrue(solution->getVertexOrder().at(0) == solution1->getVertexOrder().at(0));
-					Assert::IsTrue(solution->getVertexOrder().at(1) == solution1->getVertexOrder().at(1));
-					Assert::IsFalse(solution->getVertexOrder().at(2) == solution1->getVertexOrder().at(2));
-					Assert::IsFalse(solution->getVertexOrder().at(3) == solution1->getVertexOrder().at(3));
-				}
-			}
-			catch ( ... )
-			{
-				Assert::Fail();
-			}
-		}
+        try {
 
-		TEST_METHOD( Solution_cross_k_Negative )
-		{
-			std::shared_ptr<Graph> graph = Graph::loadFromFile("../WMH/Graphs/test1.txt");
+            std::shared_ptr<Solution> solution = Solution::cross( *solution1, *solution1, 2 );
 
-			std::shared_ptr<Solution> solution = std::make_shared<Solution>();
-			std::shared_ptr<Solution> solution1 = std::make_shared<Solution>();
-			std::shared_ptr<Solution> solution2 = std::make_shared<Solution>();
+            TestHelper::solutionHasUniqueAndCorrectVertices( *solution );
+            TestHelper::areSolutionsSame( *solution, *solution1 );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
 
-			solution1 = Solution::createRandom(*graph);
-			solution2 = Solution::createRandom(*graph);
+    TEST_METHOD( Solution_cross_same_solutions_for_negative_k )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test1.txt" );
 
-			solution = Solution::cross(*solution1, *solution2, -2);
+        std::shared_ptr<Solution> solution1 = Solution::createRandom( *graph );
 
-			bool sameSolutions = true;
+        try {
 
-			for (int i = 0; i < graph->getVertexCount(); i++)
-			{
-				if (solution1->getVertexOrder().at(i) != solution1->getVertexOrder().at(i)) {
-					sameSolutions = false;
-					break;
-				}
-			}
+            std::shared_ptr<Solution> solution = Solution::cross( *solution1, *solution1, -2 );
 
-			try
-			{
-				if (!sameSolutions) {
-					Assert::IsFalse(solution->getVertexOrder().at(0) == solution1->getVertexOrder().at(0));
-					Assert::IsFalse(solution->getVertexOrder().at(1) == solution1->getVertexOrder().at(1));
-					Assert::IsTrue(solution->getVertexOrder().at(2) == solution1->getVertexOrder().at(2));
-					Assert::IsTrue(solution->getVertexOrder().at(3) == solution1->getVertexOrder().at(3));
-				}
-			}
-			catch ( ... )
-			{
-				Assert::Fail();
-			}
-		}
-	};
+            TestHelper::solutionHasUniqueAndCorrectVertices( *solution );
+            TestHelper::areSolutionsSame( *solution, *solution1 );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
+
+    TEST_METHOD( Solution_mutate )
+    {
+        std::shared_ptr<Graph> graph = Graph::loadFromFile( "../WMH/Graphs/test1.txt" );
+
+        std::shared_ptr<Solution> solution = Solution::createRandom( *graph );
+
+        try {
+            solution->mutate( 2, *graph);
+
+            TestHelper::solutionHasUniqueAndCorrectVertices( *solution );
+        } catch ( ... ) {
+            Assert::Fail();
+        }
+    }
+    };
 }
